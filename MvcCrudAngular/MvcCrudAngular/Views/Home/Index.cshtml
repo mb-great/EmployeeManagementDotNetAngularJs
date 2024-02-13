@@ -1,0 +1,188 @@
+﻿@model List<MvcCrudAngular.Models.Employee>
+
+@{
+    ViewBag.Title = "Employee List";
+}
+
+
+<div ng-controller="employeeController">
+
+
+    @*//list*@
+    <div ng-show="currentView === 'list'">
+        <h2>List Of Employee</h2>
+
+        Order By: <select ng-model="sortColumn">
+            <option value="ID">ID </option>
+            <option value="Name">Name</option>
+            <option value="Email">Email</option>
+            <option value="Gender">Gender</option>
+            <option value="Country">Country</option>
+            <option value="State">State</option>
+        </select>
+
+
+        <table class="table table-bordered">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Country</th>
+                <th>State</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+
+            <tr ng-repeat="employee in employees">
+                <td>{{ employee.Id }}</td>
+                <td>{{ employee.Name }}</td>
+                <td>{{ employee.Email }}</td>
+                <td>{{ employee.Gender }}</td>
+                <td>{{ employee.CountryName }}</td>
+                <td>{{ employee.StateName }}</td>
+                <td>
+                    <div ng-if="employee.ImageData && employee.ImageData.length > 0">
+                        <button ng-click="viewImage(employee)">View Image</button>
+                        <button ng-click="downloadImage(employee)">Download Image</button>
+                    </div>
+                    <div ng-if="!employee.ImageData || employee.ImageData.length === 0">
+                        No Image
+                    </div>
+                </td>
+
+                <td>
+
+                    <a class="btn btn-warning btn-sm" ng-click="changeView('update');update(employee)">Edit</a>
+                    <a class="btn btn-danger btn-sm" ng-click="deleteEmployee(employee.Id)">Delete</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="7" style="text-align:center;font-weight:bolder">
+                    <div ng-if="employees.length === 0">
+                        <p>No data found</p>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+        <button ng-click="changeView('create')">Create</button>
+    </div>
+
+    @*//create*@
+    <div ng-show="currentView === 'create'">
+        <h2>Create Employee</h2>
+
+        <form name="createEmployeeForm" ng-submit="createEmployee()" novalidate>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input placeholder="name" type="text" id="name" ng-model="employee.Name" class="form-control" ng-required="true" />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input placeholder="email" type="email" id="email" ng-model="employee.Email" class="form-control" ng-required="true" />
+            </div>
+
+            <div class="form-group">
+                <label>Gender:</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="employee.Gender" value="Male" ng-required="true" /> Male
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="employee.Gender" value="Female" ng-required="true" /> Female
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <select id="country" ng-model="employee.CountryId" class="form-control" ng-required="true" ng-change="getEmployeeStates(employee.CountryId)" ng-options="country.CountryId as country.CountryName for country in countries">
+                <option value="" disabled hidden selected>Select Countries</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="State">State:</label>
+                <select id="State" ng-model="employee.StateId" class="form-control" ng-required="true" ng-options="state.StateId as state.StateName for state in states">
+                    <option value="" disabled hidden selected>Select States</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="imageFile">Image:</label>
+                <input type="file" id="imageFile" ng-model="employee.ImageData" class="form-control" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+                <!-- Add other form fields as needed -->
+
+                <button ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">Add Employee</button>
+                <a href="/" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    @*//update*@
+    <div ng-show="currentView === 'update'">
+
+        <h2>Update Employee</h2>
+
+        <form name="createEmployeeForm" ng-submit="updateEmployee()" novalidate>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" ng-model="editEmployee.Name" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" ng-model="editEmployee.Email" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Gender:</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="editEmployee.Gender" value="Male" required /> Male
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="editEmployee.Gender" value="Female" required /> Female
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <select id="country" ng-model="editEmployee.CountryId" class="form-control" ng-required="true" ng-change="getEmployeeStates(editEmployee.CountryId)" ng-options="country.CountryId as country.CountryName for country in countries">
+                <option value="" disabled hidden selected>Select Countries</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="country">State:</label>
+                <select id="State" ng-model="editEmployee.StateId" class="form-control" ng-required="true" ng-options="state.StateId as state.StateName for state in states">
+                    <option value="" disabled hidden selected>Select States</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="imageUpdateFile">Image:</label>
+                <input type="file" id="imageUpdateFile" ng-model="editEmployee.ImageData" class="form-control" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+                <button ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">Update</button>
+                <a href="/" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    <script src="~/Scripts/EmployeeController.js"></script>
+</div>
+    

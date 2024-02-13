@@ -1,0 +1,66 @@
+﻿
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<div ng-controller="employeeController">
+   
+        <h2>Create Employee</h2>
+
+        <form name="createEmployeeForm" ng-submit="updateEmployee()" novalidate>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" ng-model="employee.Name" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" ng-model="employee.Email" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Gender:</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="employee.Gender" value="Male" required /> Male
+                    </label>
+                    <label>
+                        <input type="radio" ng-model="employee.Gender" value="Female" required /> Female
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <select id="country" ng-model="employee.CountryId" class="form-control" required ng-change="getEmployeeStates(employee.CountryId)">
+                    <!-- Populate options dynamically based on countries data -->
+                    <option ng-repeat="country in countries" value="{{ country.CountryId }}">{{ country.CountryName }}</option>
+                    <option value="" disabled hidden selected>Select Countries</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="country">State:</label>
+                <select id="country" ng-model="employee.StateId" class="form-control" required>
+                    <!-- Populate options dynamically based on countries data -->
+                    <option ng-repeat="state in states" value="{{ state.StateId }}">{{ state.StateName }}</option>
+                    <option value="" disabled hidden selected>Select States</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <!-- Add other form fields as needed -->
+
+                <button ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">Update</button>
+                <a href="#/" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    
+
+    <!-- Include AngularJS scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+
+    <script src="~/Scripts/EmployeeController.js"></script>
+</div>

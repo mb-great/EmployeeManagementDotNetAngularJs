@@ -1,0 +1,35 @@
+﻿
+<!DOCTYPE html>
+<html ng-app="employeeApp">
+
+<head>
+    <title>Employee Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Add other stylesheets or scripts as needed -->
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Employee Management</a>
+            </div>
+            
+                <!-- Add other navigation links as needed -->
+         
+        </div>
+    </nav>
+
+    <div class="container">
+        @RenderBody() <!-- This is the important line to render the content of the views -->
+        <ng-view></ng-view>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    <script src="~/Scripts/EmployeeController.js"></script>
+    <!-- Add other scripts as needed -->
+
+</body>
+
+</html>
